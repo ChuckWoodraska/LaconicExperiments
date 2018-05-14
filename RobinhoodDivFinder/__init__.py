@@ -7,16 +7,42 @@ from datetime import datetime
 config = utils.read_config(utils.get_file_path(__file__, 'config.ini'))
 
 quandl.ApiConfig.api_key = config['QUANDL']['api_key']
-{'HYI': 12}
+
 my_trader = Robinhood()
 logged_in = my_trader.login(username=config['ROBINHOOD']['username'], password=config['ROBINHOOD']['password'])
 
-# current_price / (div_freq * div_payout)
-# pprint.pprint(my_trader.securities_owned())
-# for security in my_trader.securities_owned()['results']:
-#     pprint.pprint(security['instrument'].split('/')[-2])
-#     symbol = my_trader.instrument(security['instrument'].split('/')[-2])['symbol']
-#     print(symbol)
+# (div_freq * div_payout) / current_price
+symbols_freq = {}
+id_to_symbols = {}
+div_rate = {}
+for security in my_trader.securities_owned()['results']:
+    instrument = my_trader.instrument(security['instrument'].split('/')[-2])
+    symbol = instrument['symbol']
+    id_to_symbols[security['instrument'].split('/')[-2]] = symbol
+    symbols_freq[symbol] = {}
+    quote = my_trader.quote_data(symbol)
+    symbols_freq[symbol]['price'] = float(quote['last_trade_price'])
+    try:
+        mydata = quandl.get_table('ZACKS/DA', ticker=symbol)
+        symbols_freq[symbol]['freq'] = mydata.div_freq_code[0]
+        symbols_freq[symbol]['div_amt'] = mydata.div_amt[0]
+        symbols_freq[symbol]['annual_amt'] = mydata.iad[0]
+    except:
+        symbols_freq[symbol]['freq'] = None
+        symbols_freq[symbol]['div_amt'] = None
+        symbols_freq[symbol]['ytd_amt'] = None
+
+print(symbols_freq)
+print(id_to_symbols)
+
+for sym in symbols_freq:
+    try:
+        div_rate[sym] = (symbols_freq[sym]['freq'] * symbols_freq[sym]['div_amt']) / symbols_freq[sym]['price']
+    except Exception as e:
+        print(e)
+pprint.pprint(div_rate)
+
+
 def calculate_total_div_for_year(my_trader):
     total_amount = 0
     for div in my_trader.dividends()['results']:
@@ -25,38 +51,6 @@ def calculate_total_div_for_year(my_trader):
             print(div['payable_date'])
             total_amount += float(div['amount'])
     print(total_amount)
-    print(total_amount/12)
-# # stock_instrument = my_trader.securities_owned()
-# # pprint.pprint(stock_instrument)
-#     try:
-#         mydata = quandl.get_table('ZACKS/DA', ticker=symbol)
-#         x = mydata.iad[0]
-#         y = mydata.div_freq_code[0]
-#         z = mydata.div_amt[0]
-#         print(mydata.div_freq_code)
-#         print(mydata.iad)
-#         print(mydata.div_amt)
-#     except:
-#         pass
-import requests
+    print(total_amount / 12)
 
-# Request: Market Quotes (https://sandbox.tradier.com/v1/markets/quotes?symbols=spy)
-
-
-# # Headers
-#
-# headers = {"Accept":"application/json",
-#            "Authorization":"Bearer "}
-#
-# # Send synchronously
-#
-# response = requests.get('https://api.tradier.com/beta/markets/fundamentals/dividends?symbols=AAPL', headers=headers)
-# try:
-#   content = response.text
-#   # Success
-#   print(content)
-# except:
-#   # Exception
-#   print('Exception during request')
-
-calculate_total_div_for_year(my_trader)
+# calculate_total_div_for_year(my_trader)

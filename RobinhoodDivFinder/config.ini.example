@@ -1,3 +1,6 @@
 [ROBINHOOD]
 username=user
 password=pass123
+
+[QUANDL]
+api_key=keyxxxxxxxxxxx
