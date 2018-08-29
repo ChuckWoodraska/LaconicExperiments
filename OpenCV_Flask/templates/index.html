@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Thresholder</title>
+</head>
+<body>
+<div class="slidecontainer">
+  <input type="range" min="0" max="255" value="50" class="slider" id="myRange1">
+    <p>Value: <span id="demo1"></span></p>
+</div>
+<div class="slidecontainer">
+  <input type="range" min="0" max="255" value="255" class="slider" id="myRange2">
+    <p>Value: <span id="demo2"></span></p>
+</div>
+<div id="tetrisThresh">
+    <img src="../static/images/tetris_blocks.png">
+</div>
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+<script
+  src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+  integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+  crossorigin="anonymous"></script>
+<script src="../static/js/multirange.js">
+</script>
+<script src="../static/js/thresher.js"></script>
+<script>
+let slider = document.getElementById("myRange1");
+let output = document.getElementById("demo1");
+output.innerHTML = slider.value; // Display the default slider value
+
+
+let slider2= document.getElementById("myRange2");
+let output2 = document.getElementById("demo2");
+output2.innerHTML = slider2.value; // Display the default slider value
+$('#myRange1').on("input", (event) => {
+    $.get(`/render_thresh/${event.currentTarget.value}/${slider2.value}`, (data) => {
+        $("#tetrisThresh").html(data);
+    });
+    output.innerHTML = event.currentTarget.value;
+});
+$('#myRange2').on("input", (event) => {
+    $.get(`/render_thresh_black/${slider.value}/${event.currentTarget.value}`, (data) => {
+        $("#tetrisThresh").html(data);
+    });
+    output2.innerHTML = event.currentTarget.value;
+});
+
+
+
+</script>
+</body>
+</html>
