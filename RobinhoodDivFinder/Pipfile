@@ -1,0 +1,17 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[dev-packages]
+
+[packages]
+chuck_pyutils = {git = "https://github.com/ChuckWoodraska/ChuckPyUtils.git", editable = true}
+Robinhood = {git = "https://github.com/Jamonek/Robinhood.git", editable = true}
+python-dateutil = "*"
+quandl = "*"
+robinhood = "*"
+robin-stocks = "*"
+
+[requires]
+python_version = "3.5"

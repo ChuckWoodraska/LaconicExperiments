@@ -6,10 +6,10 @@ name = "pypi"
 [dev-packages]
 
 [packages]
+google-api-python-client = "*"
+"google-auth-httplib2" = "*"
+google-auth-oauthlib = "*"
 chuck_pyutils = {git = "https://github.com/ChuckWoodraska/ChuckPyUtils.git", editable = true}
-Robinhood = {git = "https://github.com/Jamonek/Robinhood.git", editable = true}
-python-dateutil = "*"
-quandl = "*"
 
 [requires]
-python_version = "3.5"
+python_version = "3.6"

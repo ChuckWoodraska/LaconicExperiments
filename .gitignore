@@ -54,3 +54,6 @@ fabric.properties
 .idea/
 DominantColor/
 *.ini
+
+ReadGoogleSheets/credentials.json
+ReadGoogleSheets/token.pickle
